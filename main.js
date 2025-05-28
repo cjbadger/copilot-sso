@@ -23,12 +23,26 @@ const loginRequest = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
+// Show popup blocked message
+function showPopupBlockedMessage() {
+    const loginStatus = document.getElementById("loginStatus");
+    loginStatus.innerHTML = "Pop-up blocked. Please <a href='#' onclick='signInUser()'>click here</a> to sign in manually.";
+    loginStatus.style.color = "#ff0000";
+}
+
 // Handle login request
 async function signInUser() {
     try {
         const loginResponse = await msalInstance.loginPopup(loginRequest);
     } catch (err) {
-        console.log(err)
+        console.log(err);
+        if (err.name === "BrowserAuthError" && 
+            (err.errorMessage.includes("popup_window_error") || 
+             err.errorMessage.includes("empty_window_error"))) {
+            // Show login button if popup was blocked
+            document.getElementById("login").style.display = "inline";
+            return;
+        }
     }
 
     const accounts = msalInstance.getAllAccounts();
@@ -37,6 +51,7 @@ async function signInUser() {
         msalInstance.setActiveAccount(accounts[0]);
         user = accounts[0]
         document.getElementById("loginStatus").innerHTML = "Currently logged in as " + user.name + " on the website."
+        document.getElementById("loginStatus").style.color = ""; // Reset color
 
         // Hide login button and show logout button
         document.getElementById("login").style.display = "none"
