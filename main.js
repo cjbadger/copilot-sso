@@ -23,8 +23,8 @@ const loginRequest = {
 
 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
-// Handle login request after user clicks on login button
-async function onSignInClick() {
+// Handle login request
+async function signInUser() {
     try {
         const loginResponse = await msalInstance.loginPopup(loginRequest);
     } catch (err) {
@@ -51,7 +51,7 @@ async function onSignInClick() {
 let user = null;
 
 // Wait for DOM to be fully loaded before accessing elements
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const accounts = msalInstance.getAllAccounts();
 
     if (accounts.length > 0) {
@@ -62,14 +62,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hide login button and show logout button
         document.getElementById("login").style.display = "none"
         document.getElementById("logout").style.display = "inline"
-    }
 
-    // Render the WebChat when the page loads
-    renderChatWidget();
+        // Render chat widget for already logged in user
+        await renderChatWidget()
+    } else {
+        // If no account is found, automatically trigger login
+        await signInUser();
+    }
 });
 
 // Handle sign out request and refresh page
-async function onSignOutClick() {
+async function signOutUser() {
     result = await msalInstance.logoutPopup({
         account: user,
     })
