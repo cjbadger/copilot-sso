@@ -49,17 +49,24 @@ async function onSignInClick() {
 
 // Retrieve if user is currently logged in
 let user = null;
-const accounts = msalInstance.getAllAccounts();
 
-if (accounts.length > 0) {
-    user = accounts[0]
-    msalInstance.setActiveAccount(user);
-    document.getElementById("loginStatus").innerHTML = "Currently logged in as " + user.name + " on the website."
+// Wait for DOM to be fully loaded before accessing elements
+document.addEventListener('DOMContentLoaded', () => {
+    const accounts = msalInstance.getAllAccounts();
 
-    // Hide login button and show logout button
-    document.getElementById("login").style.display = "none"
-    document.getElementById("logout").style.display = "inline"
-}
+    if (accounts.length > 0) {
+        user = accounts[0]
+        msalInstance.setActiveAccount(user);
+        document.getElementById("loginStatus").innerHTML = "Currently logged in as " + user.name + " on the website."
+
+        // Hide login button and show logout button
+        document.getElementById("login").style.display = "none"
+        document.getElementById("logout").style.display = "inline"
+    }
+
+    // Render the WebChat when the page loads
+    renderChatWidget();
+});
 
 // Handle sign out request and refresh page
 async function onSignOutClick() {
@@ -233,8 +240,3 @@ async function renderChatWidget() {
         document.getElementById('webchat')
     );
 }
-
-// Render the WebChat when the page loads
-(async () => {
-    await renderChatWidget()
-})()
