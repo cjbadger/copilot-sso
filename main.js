@@ -11,7 +11,7 @@ const msalConfig = {
         authority: "https://login.microsoftonline.com/" + tenantId
     },
     cache: {
-        cacheLocation: "sessionStorage", // This configures where your cache will be stored
+        cacheLocation: "localStorage", // This configures where your cache will be stored
         storeAuthStateInCookie: false, // Set this to 'true' if you are having issues on IE11 or Edge
     }
 };
@@ -25,23 +25,37 @@ const msalInstance = new msal.PublicClientApplication(msalConfig);
 
 // Show popup blocked message
 function showPopupBlockedMessage() {
-    const loginStatus = document.getElementById("loginStatus");
-    loginStatus.innerHTML = "Pop-up blocked. Please <a href='#' onclick='signInUser()'>click here</a> to sign in manually.";
-    loginStatus.style.color = "#ff0000";
+    const loginStatus = document.getElementById("login-status");
+    const loginStatusMessage = document.getElementById("login-status__message");
+    const loginStatusSignIn = document.getElementById("login-status__sign-in");
+    loginStatusMessage.innerHTML = "Pop-up blocked. Allow pop-ups for this website, or log in.";
+    loginStatus.style.display = "inline";
+    loginStatusMessage.style.display = "inline";
+    loginStatusSignIn.style.display = "inline";
+}
+
+const hideSignInElements = () => {
+    const loginStatus = document.getElementById("login-status");
+    const loginStatusMessage = document.getElementById("login-status__message");
+    const loginStatusSignIn = document.getElementById("login-status__sign-in");
+    loginStatus.style.display = "none";
+    loginStatusMessage.style.display = "none";
+    loginStatusSignIn.style.display = "none";
 }
 
 // Handle login request
 async function signInUser() {
     try {
+        console.log("Login popup...")
         const loginResponse = await msalInstance.loginPopup(loginRequest);
     } catch (err) {
         console.log(err);
         if (err.name === "BrowserAuthError" && 
             (err.errorMessage.includes("popup_window_error") || 
              err.errorMessage.includes("empty_window_error"))) {
+                console.log("POP-UP BLOCKED!")
+                showPopupBlockedMessage();
             // Show login elements if popup was blocked
-            document.getElementById("loginStatus").style.display = "inline";
-            document.getElementById("login").style.display = "inline";
             return;
         }
     }
@@ -51,12 +65,12 @@ async function signInUser() {
     if (accounts.length > 0) {
         msalInstance.setActiveAccount(accounts[0]);
         user = accounts[0]
-        document.getElementById("loginStatus").innerHTML = "Currently logged in as " + user.name + " on the website."
-        document.getElementById("loginStatus").style.display = "inline";
+        document.getElementById("login-status__message").innerHTML = "Currently logged in as " + user.name + " on the website."
+        document.getElementById("login-status__message").style.display = "inline";
 
         // Hide login button and show logout button
-        document.getElementById("login").style.display = "none"
-        document.getElementById("logout").style.display = "inline"
+        document.getElementById("login-status__sign-in").style.display = "none"
+        document.getElementById("login-status__sign-out").style.display = "inline"
 
         // Render chat widget again to demonstrate that login credentials can be passed
         await renderChatWidget()
@@ -68,17 +82,29 @@ let user = null;
 
 // Wait for DOM to be fully loaded before accessing elements
 document.addEventListener('DOMContentLoaded', async () => {
+
+    // Add event listener for login button
+    document.getElementById("login-status__sign-in").addEventListener("click", () => {
+        signInUser();
+    });
+
+    // Add event listener for logout button
+    document.getElementById("login-status__sign-out").addEventListener("click", () => {
+        signOutUser();
+    });
+
+
     const accounts = msalInstance.getAllAccounts();
 
     if (accounts.length > 0) {
         user = accounts[0]
         msalInstance.setActiveAccount(user);
-        document.getElementById("loginStatus").innerHTML = "Currently logged in as " + user.name + " on the website."
-        document.getElementById("loginStatus").style.display = "inline";
+        document.getElementById("login-status__message").innerHTML = "Currently logged in as " + user.name + " on the website."
+        document.getElementById("login-status__message").style.display = "inline";
 
         // Hide login button and show logout button
-        document.getElementById("login").style.display = "none"
-        document.getElementById("logout").style.display = "inline"
+        document.getElementById("login-status__sign-in").style.display = "none"
+        document.getElementById("login-status__sign-out").style.display = "inline"
 
         // Render chat widget for already logged in user
         await renderChatWidget()
