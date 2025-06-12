@@ -296,13 +296,21 @@ async function renderChatWidget() {
     homeButton.style.right = "12px";
     homeButton.addEventListener("click", () => {
         console.log("<<< HOME CLICKED >>>");
-        directLine.postActivity({
-            type: 'event',
-            name: 'home',
-            from: {
-                id: userID,
-                name: user?.name || 'User',
-                role: 'user'
+        store.dispatch({
+            type: 'DIRECT_LINE/POST_ACTIVITY',
+            meta: {
+                method: 'keyboard'
+            },
+            payload: {
+                activity: {
+                    type: 'event',
+                    name: 'home',
+                    from: {
+                        id: userID,
+                        name: user?.name || 'User',
+                        role: 'user'
+                    }
+                }
             }
         });
     });
