@@ -289,4 +289,10 @@ async function renderChatWidget() {
         },
         document.getElementById('webchat')
     );
+    var homeButton = document.createElement("button");
+    homeButton.innerHTML = "Home";
+    homeButton.style.position = "absolute";
+    homeButton.style.top = "12px";
+    homeButton.style.right = "12px";
+    document.getElementById("chatwindow").appendChild(homeButton);
 }
