@@ -65,7 +65,7 @@ async function signInUser() {
     if (accounts.length > 0) {
         msalInstance.setActiveAccount(accounts[0]);
         user = accounts[0]
-        document.getElementById("login-status__message").innerHTML = "Currently logged in as " + user.name + " on the website."
+        document.getElementById("login-status__message").innerHTML = "Logged in as " + user.name + ".";
         document.getElementById("login-status__message").style.display = "inline";
 
         // Hide login button and show logout button
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (accounts.length > 0) {
         user = accounts[0]
         msalInstance.setActiveAccount(user);
-        document.getElementById("login-status__message").innerHTML = "Currently logged in as " + user.name + " on the website."
+        document.getElementById("login-status__message").innerHTML = "Currently logged in as " + user.name + "."
         document.getElementById("login-status__message").style.display = "inline";
 
         // Hide login button and show logout button
@@ -267,13 +267,17 @@ async function renderChatWidget() {
             }
         });
 
+        const avatarOptions = {
+            botAvatarInitials: 'CB',
+            userAvatarInitials: 'US'
+        }
+
     const styleOptions = {
         // Add styleOptions to customize Web Chat canvas
         hideUploadButton: true,
-        botAvatarImage: 'https://bot-framework.azureedge.net/bot-icons-v1/6ab9b101-b65c-4357-9e9f-915cbf313a14_2K5Bt02aW8egEb97fxAgh7vqChK4UV3Nh3Lw3YYArhEKR8mB.png',
-        botAvatarInitials: 'Bot',
-        userAvatarImage: 'https://content.powerapps.com/resource/makerx/static/media/user.0d06c38a.svg',
-        userAvatarInitials: 'User'
+        avatarOptions: avatarOptions,
+        suggestedActionLayout: 'stacked'
+
     };
 
     window.WebChat.renderWebChat(
