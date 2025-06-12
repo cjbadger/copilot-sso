@@ -294,5 +294,17 @@ async function renderChatWidget() {
     homeButton.style.position = "absolute";
     homeButton.style.top = "12px";
     homeButton.style.right = "12px";
+    homeButton.addEventListener("click", () => {
+        console.log("<<< HOME CLICKED >>>");
+        directLine.postActivity({
+            type: 'event',
+            name: 'home',
+            from: {
+                id: userID,
+                name: user?.name || 'User',
+                role: 'user'
+            }
+        });
+    });
     document.getElementById("chatwindow").appendChild(homeButton);
 }
