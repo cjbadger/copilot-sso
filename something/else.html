@@ -2,15 +2,15 @@
 <html lang="en">
 
 <head>
-    <title>Copilot with SSO</title>
+    <title>Copilot with SSO - Subdirectory</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
     <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
     <script type="text/javascript">
         if (typeof msal === 'undefined') document.write(unescape("%3Cscript src='https://alcdn.msftauth.net/browser/2.32.0/js/msal-browser.min.js' type='text/javascript' %3E%3C/script%3E"));
     </script>
-    <script type="text/javascript" src="main.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="../main.js"></script>
+    <link rel="stylesheet" href="../style.css">
 </head>
 
 <body>
@@ -20,13 +20,13 @@
         </div>
         <div id="subheader">
             <span id="login-status">
-                <span id="login-status__message"></span>
+                <span id="login-status__message">You are not logged in.</span>
                 <a id="login-status__sign-in" href="#">Log in</a>
                 <a id="login-status__sign-out" href="#">Log out</a>
             </span>
         </div>
 
-        <div id="webchat"></div>
+        <div id="webchat"> </div>
     </div>
 </body>
 
